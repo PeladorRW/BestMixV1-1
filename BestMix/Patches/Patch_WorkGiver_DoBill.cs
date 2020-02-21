@@ -39,15 +39,15 @@ namespace BestMix.Patches
             MethodInfo FetchStaticFields = AccessTools.Method(typeof(RegionProcessorSubtitution), RegionProcessorSubtitution.FetchStaticFieldsMethodName);
             MethodInfo UpdateData = AccessTools.Method(typeof(RegionProcessorSubtitution), RegionProcessorSubtitution.UpdateDataName);
             //h = hidden type
-            var c__AnonStorey1 = AccessTools.FirstInner(workGiverType, type => type.Name.Contains("AnonStorey1"));
-            var h_adjacentRegionsAvailable = AccessTools.Field(c__AnonStorey1, "adjacentRegionsAvailable");
-            var h_pawn = AccessTools.Field(c__AnonStorey1, "pawn");
-            var h_regionsProcessed = AccessTools.Field(c__AnonStorey1, "regionsProcessed");
-            var h_rootCell = AccessTools.Field(c__AnonStorey1, "rootCell");
-            var h_foundAll = AccessTools.Field(c__AnonStorey1, "foundAll");
-            var h_bill = AccessTools.Field(c__AnonStorey1, "bill");
-            var h_billGiver = AccessTools.Field(c__AnonStorey1, "billGiver");
-            var h_chosen = AccessTools.Field(c__AnonStorey1, "chosen");
+            var c__DisplayClass20_0 = AccessTools.FirstInner(workGiverType, type => type.Name.Contains("<>c__DisplayClass20_0"));
+            var h_adjacentRegionsAvailable = AccessTools.Field(c__DisplayClass20_0, "adjacentRegionsAvailable");
+            var h_pawn = AccessTools.Field(c__DisplayClass20_0, "pawn");
+            var h_regionsProcessed = AccessTools.Field(c__DisplayClass20_0, "regionsProcessed");
+            var h_rootCell = AccessTools.Field(c__DisplayClass20_0, "rootCell");
+            var h_foundAll = AccessTools.Field(c__DisplayClass20_0, "foundAll");
+            var h_bill = AccessTools.Field(c__DisplayClass20_0, "bill");
+            var h_billGiver = AccessTools.Field(c__DisplayClass20_0, "billGiver");
+            var h_chosen = AccessTools.Field(c__DisplayClass20_0, "chosen");
             //sf = static field
             var sf_chosenIngThings = AccessTools.Field(workGiverType, "chosenIngThings");
             var sf_relevantThings = AccessTools.Field(workGiverType, "relevantThings");
@@ -61,9 +61,9 @@ namespace BestMix.Patches
             {
                 var inst = insts[i];
                 #region data field fetcher patch section
-                bool is_IL_01A6 = i > 0 && i < instsLength - 1 && inst.opcode == OpCodes.Ldloc_0 && insts[i + 1].opcode == OpCodes.Ldftn && insts[i - 1].opcode == OpCodes.Call;
-                if (is_IL_01A6)
-                { // entering IL_01A6 ldloc.0, line 1870
+                bool CodeEntry = i < instsLength - 2 && i > 0 && inst.opcode == OpCodes.Ldloc_0 && insts[i + 1].opcode == OpCodes.Ldftn && insts[i - 1].opcode == OpCodes.Call;
+                if (CodeEntry)
+                { // entering IL_0217, ldloc.0 line 2205, before ldftn instance bool RimWorld.WorkGiver_DoBill/'<>c__DisplayClass20_0'::'<TryFindBestBillIngredients>b__3'(class Verse.Region)
                     #region local data field fetcher section
                     yield return new CodeInstruction(OpCodes.Ldsfld, RegionProcessorSubtitutionSingleton);
 
@@ -113,8 +113,8 @@ namespace BestMix.Patches
                     yield return new CodeInstruction(OpCodes.Ldvirtftn, LdvirtftnMethodBase);
                     yield return new CodeInstruction(OpCodes.Newobj, RegionProcessorPointerCtor);
                     #endregion
-                    i += 2; // jump to IL_01AD, newobj, line 1873
-                    continue; // next line is IL_01B2, stloc.1, line 1873
+                    i += 2;
+                    continue; // next line is IL_0223, stloc.1, line 2208
                 }
                 #endregion
 
@@ -165,4 +165,5 @@ ldfld / ldsfld 등으로 인스턴스 스택에 적재
 스택(하)
 ldvirtftn 말고 ldftn 을 사용했어야함...
 */
+
 
