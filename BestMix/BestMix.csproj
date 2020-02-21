@@ -59,10 +59,15 @@
       <HintPath>E:\SteamLibrary\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BestMixUtility.cs" />
     <Compile Include="BestMix_Initializer.cs" />
+    <Compile Include="BillStack_DoListing_PrePatch.cs" />
     <Compile Include="CompBestMix.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="HarmonyPatching.cs" />

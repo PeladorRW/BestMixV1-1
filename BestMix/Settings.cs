@@ -18,7 +18,13 @@ namespace BestMix
                 listing_Standard.CheckboxLabeled("BestMix.AllowBestMix".Translate(), ref AllowBestMix, null);
                 listing_Standard.Gap(gap);
                 listing_Standard.CheckboxLabeled("BestMix.AllowMealMakersOnly".Translate(), ref AllowMealMakersOnly, null);
-                listing_Standard.Gap(gap * 2);
+                listing_Standard.Gap(gap);
+                if ((Prefs.DevMode) && (DebugMaster))
+                {
+                    listing_Standard.CheckboxLabeled("BestMix.AllowBMBillMaxSet".Translate(), ref AllowBMBillMaxSet, null);
+                    listing_Standard.Gap(gap);
+                }
+                listing_Standard.Gap(gap);
 
                 if (RadiusRestrict)
                 {
@@ -53,6 +59,7 @@ namespace BestMix
             base.ExposeData();
             Scribe_Values.Look<bool>(ref AllowBestMix, "AllowBestMix", true, false);
             Scribe_Values.Look<bool>(ref AllowMealMakersOnly, "AllowMealMakersOnly", false, false);
+            Scribe_Values.Look<bool>(ref AllowBMBillMaxSet, "AllowDMBillMaxSet", true, false);
             Scribe_Values.Look<bool>(ref UseRadiusLimit, "UseRadiusLimit", false, false);
             Scribe_Values.Look<int>(ref RadiusLimit, "RadiusLimit", 100, false);
             Scribe_Values.Look<bool>(ref IncludeRegionLimiter, "IncludeRegionLimiter", true, false);
@@ -64,6 +71,7 @@ namespace BestMix
 
         public bool AllowBestMix = true;
         public bool AllowMealMakersOnly = false;
+        public bool AllowBMBillMaxSet = true;
         public bool UseRadiusLimit = false;
         public int RadiusLimit = 100;
 
