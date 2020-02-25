@@ -20,11 +20,14 @@ namespace BestMix
                 for (int i = 0; i < list.Count; i++)
                 {
                     Thing thing = list[i];
-                    if (!processedThings.Contains(thing) && ReachabilityWithinRegion.ThingFromRegionListerReachable(thing, r, PathEndMode.ClosestTouch, p_pawn)
-                        && BMixValidator(thing) && (!thing.def.IsMedicine || (!(p_billGiver is Pawn))))
+                    if (!(BestMixUtility.BMIsForbidden(thing)))
                     {
-                        newRelevantThings.Add(thing);
-                        processedThings.Add(thing);
+                        if (!processedThings.Contains(thing) && ReachabilityWithinRegion.ThingFromRegionListerReachable(thing, r, PathEndMode.ClosestTouch, p_pawn)
+                            && BMixValidator(thing) && (!thing.def.IsMedicine || (!(p_billGiver is Pawn))))
+                        {
+                            newRelevantThings.Add(thing);
+                            processedThings.Add(thing);
+                        }
                     }
                 }
                 lf_regionsProcessed++;

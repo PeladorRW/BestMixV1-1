@@ -610,6 +610,21 @@ namespace BestMix
             return debugMsg;
         }
 
+        public static bool BMIsForbidden(Thing thing)
+        {
+            if (thing != null)
+            {
+                if (thing.TryGetComp<CompForbiddable>() != null)
+                {
+                    if (thing.TryGetComp<CompForbiddable>().Forbidden)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         public static Predicate<Thing> BestMixValidator(Pawn pawn, Thing billGiver, Bill bill)
         {
             Predicate<Thing> Validator = (Thing t) => t.Spawned && !t.IsForbidden(pawn)
