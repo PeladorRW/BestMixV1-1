@@ -282,8 +282,8 @@ namespace BestMix
                         {
                             t2dtr = t2comp.TicksUntilRotAtCurrentTemp;
                         }
-                        float num = (maxdtr - t2dtr);
-                        float value = (maxdtr - t1dtr);
+                        float num = (t1dtr);
+                        float value = (t2dtr);
                         return (num.CompareTo(value));
                     };
                     break;
