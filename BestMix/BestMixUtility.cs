@@ -158,6 +158,11 @@ namespace BestMix
             list.AddDistinct("FRZ");
             list.AddDistinct("RND");
             list.AddDistinct("BIT");
+            if (Controller.Settings.useStock)
+            {
+                list.AddDistinct("MST");
+                list.AddDistinct("LST");
+            }
             list.AddDistinct("BTY");
             list.AddDistinct("UGY");
             list.AddDistinct("HVY");
@@ -191,6 +196,8 @@ namespace BestMix
                 case "FRZ": BMixIconPath += "Coldest"; break;
                 case "RND": BMixIconPath += "Random"; break;
                 case "BIT": BMixIconPath += "Fraction"; break;
+                case "MST": BMixIconPath += "StockMost"; break;
+                case "LST": BMixIconPath += "StockLeast"; break;
                 case "BTY": BMixIconPath += "Beauty"; break;
                 case "UGY": BMixIconPath += "Duckling"; break;
                 case "HVY": BMixIconPath += "Heaviest"; break;
@@ -223,6 +230,8 @@ namespace BestMix
                 case "TMP": ModeDisplay = "BestMix.ModeTemperatureTMP".Translate(); break;
                 case "FRZ": ModeDisplay = "BestMix.ModeTemperatureFRZ".Translate(); break;
                 case "BIT": ModeDisplay = "BestMix.ModeFractionBIT".Translate(); break;
+                case "MST": ModeDisplay = "BestMix.ModeStockMST".Translate(); break;
+                case "LST": ModeDisplay = "BestMix.ModeStockLST".Translate(); break;
                 case "BTY": ModeDisplay = "BestMix.ModeBeautyBTY".Translate(); break;
                 case "UGY": ModeDisplay = "BestMix.ModeBeautyUGY".Translate(); break;
                 case "HVY": ModeDisplay = "BestMix.ModeMassHVY".Translate(); break;
@@ -240,7 +249,7 @@ namespace BestMix
             return ModeDisplay;
         }
 
-        public static Comparison<Thing> GetBMixComparer(Thing billGiver, IntVec3 rootCell)
+        public static Comparison<Thing> GetBMixComparer(Thing billGiver, IntVec3 rootCell, Bill bill)
         {
             string BMixMode = "DIS";
             bool BMixDebugBench = false;
@@ -340,6 +349,22 @@ namespace BestMix
                     {
                         float num = (((float)(t2.def.stackLimit)) / ((float)(Math.Max(1, t2.stackCount))));
                         float value = (((float)(t1.def.stackLimit)) / ((float)(Math.Max(1, t1.stackCount))));
+                        return (num.CompareTo(value));
+                    };
+                    break;
+                case "MST":
+                    comparison = delegate (Thing t1, Thing t2)
+                    {
+                        float num = GetStockAmount(t2, billGiver, rootCell, bill);
+                        float value = GetStockAmount(t1, billGiver, rootCell, bill);
+                        return (num.CompareTo(value));
+                    };
+                    break;
+                case "LST":
+                    comparison = delegate (Thing t1, Thing t2)
+                    {
+                        float num = GetStockAmount(t1, billGiver, rootCell, bill);
+                        float value = GetStockAmount(t2, billGiver, rootCell, bill);
                         return (num.CompareTo(value));
                     };
                     break;
@@ -466,8 +491,46 @@ namespace BestMix
             return comparison;
         }
 
+        public static float GetStockAmount(Thing t, Thing billGiver, IntVec3 root, Bill bill)
+        {
+            float num = 0f;
+        
+            List<Thing> things = t.Map.listerThings.ThingsOfDef(t.def);
+            if (things.Count > 0)
+            {
+                foreach (Thing thing in things)
+                {
+                    if (!(BMStockInRadius(thing, billGiver, bill)))
+                    {
+                        continue;
+                    }
+                    if (Controller.Settings.inStorage)
+                    {
+                        if (!(thing.IsInValidStorage()))
+                        {
+                            continue;
+                        }
+                    }
+                    if (BMIsForbidden(thing))
+                    {
+                        continue;
+                    }
+                    if ((thing.IsBurning()) || (thing.Fogged()))
+                    {
+                        continue;
+                    }
+
+
+                    num += thing.stackCount;
+                }
+            }
+            
+            return num;
+        }
+
+
         // Debug
-        internal static void BMixDebugList(List<Thing> list, Thing billGiver, IntVec3 rootCell)
+        internal static void BMixDebugList(List<Thing> list, Thing billGiver, IntVec3 rootCell, Bill bill)
         {
             if ((Prefs.DevMode) && (Controller.Settings.DebugMaster) && (Controller.Settings.DebugSort))
             {
@@ -484,7 +547,7 @@ namespace BestMix
                                 for (int i = 0; i < list.Count; i++)
                                 {
                                     Thing thing = list[i];
-                                    string debugMsg = MakeDebugString(i, thing, billGiver, rootCell, compBMix.CurMode);
+                                    string debugMsg = MakeDebugString(i, thing, billGiver, rootCell, bill, compBMix.CurMode);
                                     Log.Message(debugMsg, ignore);
                                 }
                             }
@@ -558,9 +621,10 @@ namespace BestMix
             }
         }
 
-        public static string MakeDebugString(int indx, Thing thing, Thing billGiver, IntVec3 rootCell, string BMixMode)
+        public static string MakeDebugString(int indx, Thing thing, Thing billGiver, IntVec3 rootCell, Bill bill, string BMixMode)
         {
             float stat = 0f;
+
             switch (BMixMode)
             {
                 case "DIS": stat = (thing.Position - rootCell).LengthHorizontalSquared; break;
@@ -586,6 +650,8 @@ namespace BestMix
                 case "TMP": stat = thing.AmbientTemperature; break;
                 case "FRZ": stat = (0f - thing.AmbientTemperature); break;
                 case "BIT": stat = ((float)thing.def.stackLimit / (float)(Math.Max(1, thing.stackCount))); break;
+                case "MST": stat = GetStockAmount(thing, billGiver, rootCell, bill); break;
+                case "LST": stat = (0f - GetStockAmount(thing, billGiver, rootCell, bill)); break;
                 case "RND": stat = RNDFloat(); break;
                 case "BTY": stat = thing.GetStatValue(StatDefOf.Beauty); break;
                 case "UGY": stat = (0f - thing.GetStatValue(StatDefOf.Beauty)); break;
@@ -623,6 +689,15 @@ namespace BestMix
                 }
             }
             return false;
+        }
+
+        public static bool BMStockInRadius(Thing t, Thing billGiver, Bill bill)
+        {
+            if (Controller.Settings.mapStock)
+            {
+                return true;
+            }
+            return ((float)(t.Position - billGiver.Position).LengthHorizontalSquared < bill.ingredientSearchRadius * bill.ingredientSearchRadius);
         }
 
         public static Predicate<Thing> BestMixValidator(Pawn pawn, Thing billGiver, Bill bill)

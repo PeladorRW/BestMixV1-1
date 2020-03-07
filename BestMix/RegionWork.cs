@@ -33,11 +33,11 @@ namespace BestMix
                 lf_regionsProcessed++;
                 if (newRelevantThings.Count > 0 && lf_regionsProcessed > lf_adjacentRegionsAvailable)
                 {
-                    Comparison<Thing> comparison = BestMixUtility.GetBMixComparer(p_billGiver, lf_rootCell);
+                    Comparison<Thing> comparison = BestMixUtility.GetBMixComparer(p_billGiver, lf_rootCell, p_bill);
                     //newRelevantThings.Sort(comparison);
                     relevantThings.AddRange(newRelevantThings);
                     relevantThings.Sort(comparison);
-                    BestMixUtility.BMixDebugList(relevantThings, p_billGiver, lf_rootCell);
+                    BestMixUtility.BMixDebugList(relevantThings, p_billGiver, lf_rootCell, p_bill);
                     newRelevantThings.Clear();
 
                     if (BestMixUtility.TryFindBestMixInSet(relevantThings, p_bill, p_chosen, ingredientsOrdered))

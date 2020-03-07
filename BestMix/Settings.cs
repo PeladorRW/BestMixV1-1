@@ -18,14 +18,30 @@ namespace BestMix
                 listing_Standard.CheckboxLabeled("BestMix.AllowBestMix".Translate(), ref AllowBestMix, null);
                 listing_Standard.Gap(gap);
                 listing_Standard.CheckboxLabeled("BestMix.AllowMealMakersOnly".Translate(), ref AllowMealMakersOnly, null);
-                listing_Standard.Gap(gap);
+                listing_Standard.Gap(gap * 2f);
+
+                // Max Bills
+                /*
                 if ((Prefs.DevMode) && (DebugMaster))
                 {
                     listing_Standard.CheckboxLabeled("BestMix.AllowBMBillMaxSet".Translate(), ref AllowBMBillMaxSet, null);
                     listing_Standard.Gap(gap);
                 }
+                */
+
+                // Stock comparison (performance considerations)
+
+                if (useStock)
+                {
+                    listing_Standard.CheckboxLabeled("BestMix.MapStock".Translate(), ref mapStock, null);
+                    listing_Standard.Gap(gap);
+                    listing_Standard.CheckboxLabeled("BestMix.InStorage".Translate(), ref inStorage, null);
+                    listing_Standard.Gap(gap);
+                }
+                
                 listing_Standard.Gap(gap);
 
+                // if restrict by radius
                 if (RadiusRestrict)
                 {
                     listing_Standard.CheckboxLabeled("BestMix.UseRadiusLimit".Translate(), ref UseRadiusLimit, null);
@@ -35,6 +51,7 @@ namespace BestMix
                     listing_Standard.Gap(gap);
                 }
 
+                // debug
                 if ((Prefs.DevMode) && (DebugMaster))
                 {
                     listing_Standard.Gap(gap * 2);
@@ -60,6 +77,8 @@ namespace BestMix
             Scribe_Values.Look<bool>(ref AllowBestMix, "AllowBestMix", true, false);
             Scribe_Values.Look<bool>(ref AllowMealMakersOnly, "AllowMealMakersOnly", false, false);
             Scribe_Values.Look<bool>(ref AllowBMBillMaxSet, "AllowDMBillMaxSet", true, false);
+            Scribe_Values.Look<bool>(ref mapStock, "mapStock", false, false);
+            Scribe_Values.Look<bool>(ref inStorage, "inStorage", true, false);
             Scribe_Values.Look<bool>(ref UseRadiusLimit, "UseRadiusLimit", false, false);
             Scribe_Values.Look<int>(ref RadiusLimit, "RadiusLimit", 100, false);
             Scribe_Values.Look<bool>(ref IncludeRegionLimiter, "IncludeRegionLimiter", true, false);
@@ -75,14 +94,18 @@ namespace BestMix
         public bool UseRadiusLimit = false;
         public int RadiusLimit = 100;
 
+        public bool useStock = true; // not saved
+        public bool mapStock = false; // not saved
+        public bool inStorage = true; // not saved
+
         public bool IncludeRegionLimiter = true;
         public bool DebugSort = false;
         public bool DebugChosen = false;
         public bool DebugFound = false;
         public bool DebugIgnore = false;
 
-        public bool DebugMaster = false;
-        public bool RadiusRestrict = false;
+        public bool DebugMaster = false; // not saved
+        public bool RadiusRestrict = false; // not saved
     }
 }
 
