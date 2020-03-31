@@ -68,12 +68,14 @@
     <Compile Include="BestMixUtility.cs" />
     <Compile Include="BestMix_Initializer.cs" />
     <Compile Include="BillStack_DoListing_PrePatch.cs" />
+    <Compile Include="BMBillUtility.cs" />
     <Compile Include="CompBestMix.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="HarmonyPatching.cs" />
     <Compile Include="Patches\CustomHarmonyPatch.cs" />
     <Compile Include="Patches\HarmonyPatchTool.cs" />
     <Compile Include="Patches\Patch_WorkGiver_DoBill.cs" />
+    <Compile Include="Patch_Bill_DoInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegionProcessorSubtitution.cs" />
     <Compile Include="RegionWork.cs" />

@@ -29,7 +29,8 @@ namespace BestMix
             CompBestMix compBMix = billGiver.TryGetComp<CompBestMix>();
             if (compBMix != null)
             {
-                if (compBMix.CurMode == "DIS")
+                //if (compBMix.CurMode == "DIS")
+                if (BMBillUtility.UseBMixMode(compBMix, billGiver, bill) == "DIS")
                 {
                     return true;
                 }
@@ -95,7 +96,7 @@ namespace BestMix
             return false;
         }
 
-        public static bool BMixFinishedStatus(bool foundAll, Thing billGiver)
+        public static bool BMixFinishedStatus(bool foundAll, Thing billGiver, Bill bill)
         {
             if (foundAll)
             {
@@ -105,9 +106,14 @@ namespace BestMix
                 }
                 if (IsValidForComp(billGiver))
                 {
-                    if (billGiver.TryGetComp<CompBestMix>().CurMode == "DIS")
+                    //if (billGiver.TryGetComp<CompBestMix>().CurMode == "DIS")
+                    CompBestMix CBM = billGiver.TryGetComp<CompBestMix>();
+                    if (CBM != null)
                     {
-                        return true;
+                        if (BMBillUtility.UseBMixMode(CBM, billGiver, bill) == "DIS")
+                        {
+                            return true;
+                        }
                     }
                     return false;
                 }
@@ -170,6 +176,7 @@ namespace BestMix
             list.AddDistinct("FLM");
             list.AddDistinct("PTB");
             list.AddDistinct("PTS");
+            list.AddDistinct("PTH");
             if (IsCEActive())
             {
                 list.AddDistinct("PTE");
@@ -205,6 +212,7 @@ namespace BestMix
                 case "FLM": BMixIconPath += "Ignition"; break;
                 case "PTB": BMixIconPath += "ProtectBlunt"; break;
                 case "PTS": BMixIconPath += "ProtectSharp"; break;
+                case "PTH": BMixIconPath += "ProtectHeat"; break;
                 case "PTE": BMixIconPath += "ProtectElectric"; break;
                 case "INH": BMixIconPath += "InsulateHeat"; break;
                 case "INC": BMixIconPath += "InsulateCold"; break;
@@ -239,6 +247,7 @@ namespace BestMix
                 case "FLM": ModeDisplay = "BestMix.ModeFlammableFLM".Translate(); break;
                 case "PTB": ModeDisplay = "BestMix.ModeProtectPTB".Translate(); break;
                 case "PTS": ModeDisplay = "BestMix.ModeProtectPTS".Translate(); break;
+                case "PTH": ModeDisplay = "BestMix.ModeProtectPTH".Translate(); break;
                 case "PTE": ModeDisplay = "BestMix.ModeProtectPTE".Translate(); break;
                 case "INH": ModeDisplay = "BestMix.ModeInsulateINH".Translate(); break;
                 case "INC": ModeDisplay = "BestMix.ModeInsulateINC".Translate(); break;
@@ -249,8 +258,9 @@ namespace BestMix
             return ModeDisplay;
         }
 
-        public static Comparison<Thing> GetBMixComparer(Thing billGiver, IntVec3 rootCell, Bill bill)
+        public static Comparison<Thing> GetBMixComparer(Thing billGiver, IntVec3 rootCell, Bill bill, out bool rnd)
         {
+            rnd = false;
             string BMixMode = "DIS";
             bool BMixDebugBench = false;
 
@@ -259,7 +269,8 @@ namespace BestMix
                 CompBestMix compBM = billGiver.TryGetComp<CompBestMix>();
                 if (compBM != null)
                 {
-                    BMixMode = compBM.CurMode;
+                    //BMixMode = compBM.CurMode;
+                    BMixMode = BMBillUtility.UseBMixMode(compBM, billGiver, bill);
                     BMixDebugBench = compBM.BMixDebug;
                 }
             }
@@ -375,6 +386,7 @@ namespace BestMix
                         float value = RNDFloat();
                         return (num.CompareTo(value));
                     };
+                    rnd = true;
                     break;
                 case "BTY":
                     comparison = delegate (Thing t1, Thing t2)
@@ -429,6 +441,14 @@ namespace BestMix
                     {
                         float num = t2.GetStatValue(StatDefOf.StuffPower_Armor_Sharp);
                         float value = t1.GetStatValue(StatDefOf.StuffPower_Armor_Sharp);
+                        return (num.CompareTo(value));
+                    };
+                    break;
+                case "PTH":
+                    comparison = delegate (Thing t1, Thing t2)
+                    {
+                        float num = t2.GetStatValue(StatDefOf.StuffPower_Armor_Heat);
+                        float value = t1.GetStatValue(StatDefOf.StuffPower_Armor_Heat);
                         return (num.CompareTo(value));
                     };
                     break;
@@ -520,7 +540,6 @@ namespace BestMix
                         continue;
                     }
 
-
                     num += thing.stackCount;
                 }
             }
@@ -547,7 +566,7 @@ namespace BestMix
                                 for (int i = 0; i < list.Count; i++)
                                 {
                                     Thing thing = list[i];
-                                    string debugMsg = MakeDebugString(i, thing, billGiver, rootCell, bill, compBMix.CurMode);
+                                    string debugMsg = MakeDebugString(i, thing, billGiver, rootCell, bill, BMBillUtility.UseBMixMode(compBMix, billGiver, bill));
                                     Log.Message(debugMsg, ignore);
                                 }
                             }
@@ -660,6 +679,7 @@ namespace BestMix
                 case "FLM": stat = thing.GetStatValue(StatDefOf.Flammability); break;
                 case "PTB": stat = thing.GetStatValue(StatDefOf.StuffPower_Armor_Blunt); break;
                 case "PTS": stat = thing.GetStatValue(StatDefOf.StuffPower_Armor_Sharp); break;
+                case "PTH": stat = thing.GetStatValue(StatDefOf.StuffPower_Armor_Heat); break;
                 case "PTE":
                     StatDef protElectric = DefDatabase<StatDef>.GetNamed(ProtElectricStat, false);
                     if (protElectric != null) { stat = thing.GetStatValue(protElectric); }

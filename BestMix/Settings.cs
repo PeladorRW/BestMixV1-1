@@ -41,6 +41,14 @@ namespace BestMix
                 
                 listing_Standard.Gap(gap);
 
+                if (adjBillBMPos)
+                {
+                    listing_Standard.Label("BestMix.BillBMPos".Translate() + "  " + (int)BillBMPos, -1f, null);
+                    BillBMPos = (int)listing_Standard.Slider((int)BillBMPos, 90f, 120f);
+                    listing_Standard.Gap(gap);
+                }
+
+                listing_Standard.Gap(gap);
                 // if restrict by radius
                 if (RadiusRestrict)
                 {
@@ -95,8 +103,11 @@ namespace BestMix
         public int RadiusLimit = 100;
 
         public bool useStock = true; // not saved
-        public bool mapStock = false; // not saved
-        public bool inStorage = true; // not saved
+        public bool mapStock = false;
+        public bool inStorage = true;
+
+        public bool adjBillBMPos = true; // not saved
+        public float BillBMPos = (5 * 24f); // not saved
 
         public bool IncludeRegionLimiter = true;
         public bool DebugSort = false;

@@ -11,6 +11,7 @@ namespace BestMix
     {
         public string CurMode;
         public bool BMixDebug = false;
+        public List<string> BillBMModes = new List<string>();
 
         public CompProperties_BestMix BMProps => (CompProperties_BestMix)props;
 
@@ -19,6 +20,7 @@ namespace BestMix
             base.PostExposeData();
             Scribe_Values.Look<string>(ref CurMode, "CurMode", "DIS", false);
             Scribe_Values.Look<bool>(ref BMixDebug, "BMixDebug", false, false);
+            Scribe_Collections.Look(ref BillBMModes, "BillBMModes", LookMode.Value);
         }
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
@@ -28,6 +30,11 @@ namespace BestMix
             if (CurMode == null)
             {
                 CurMode = BMProps.DefaultMode;
+            }
+            
+            if (respawningAfterLoad)
+            {
+                BMBillUtility.CheckBillBMValues(this, (parent as Thing), BillBMModes);
             }
         }
 
