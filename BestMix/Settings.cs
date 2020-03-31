@@ -44,7 +44,7 @@ namespace BestMix
                 if (adjBillBMPos)
                 {
                     listing_Standard.Label("BestMix.BillBMPos".Translate() + "  " + (int)BillBMPos, -1f, null);
-                    BillBMPos = (int)listing_Standard.Slider((int)BillBMPos, 90f, 120f);
+                    BillBMPos = (int)listing_Standard.Slider((int)BillBMPos, 150f, 200f);
                     listing_Standard.Gap(gap);
                 }
 
@@ -106,8 +106,8 @@ namespace BestMix
         public bool mapStock = false;
         public bool inStorage = true;
 
-        public bool adjBillBMPos = true; // not saved
-        public float BillBMPos = (5 * 24f); // not saved
+        public bool adjBillBMPos = false; // not saved
+        public float BillBMPos = (150f); // not saved
 
         public bool IncludeRegionLimiter = true;
         public bool DebugSort = false;
