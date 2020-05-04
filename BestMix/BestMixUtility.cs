@@ -158,6 +158,7 @@ namespace BestMix
             list.AddDistinct("DIS");
             list.AddDistinct("DTR");
             list.AddDistinct("HPT");
+            list.AddDistinct("RHP");
             list.AddDistinct("VLC");
             list.AddDistinct("VLE");
             list.AddDistinct("TMP");
@@ -197,6 +198,7 @@ namespace BestMix
                 case "DIS": BMixIconPath += "Nearest"; break;
                 case "DTR": BMixIconPath += "Expiry"; break;
                 case "HPT": BMixIconPath += "Damaged"; break;
+                case "RHP": BMixIconPath += "Robust"; break;
                 case "VLC": BMixIconPath += "Cheapest"; break;
                 case "VLE": BMixIconPath += "Value"; break;
                 case "TMP": BMixIconPath += "Warmest"; break;
@@ -232,6 +234,7 @@ namespace BestMix
                 case "DIS": ModeDisplay = "BestMix.ModeDistanceDIS".Translate(); break;
                 case "DTR": ModeDisplay = "BestMix.ModeDaysToRotDTR".Translate(); break;
                 case "HPT": ModeDisplay = "BestMix.ModeHealthHPT".Translate(); break;
+                case "RHP": ModeDisplay = "BestMix.ModeHealthRHP".Translate(); break;
                 case "VLC": ModeDisplay = "BestMix.ModeValueVLC".Translate(); break;
                 case "VLE": ModeDisplay = "BestMix.ModeValueVLE".Translate(); break;
                 case "RND": ModeDisplay = "BestMix.ModeRandomRND".Translate(); break;
@@ -319,6 +322,22 @@ namespace BestMix
                         if (t1.def.useHitPoints)
                         {
                             value = (((float)(t1.MaxHitPoints - t1.HitPoints)) / ((float)(Math.Max(1, t1.MaxHitPoints))));
+                        }
+                        return (num.CompareTo(value));
+                    };
+                    break;
+                case "RHP":
+                    comparison = delegate (Thing t1, Thing t2)
+                    {
+                        float num = 0f;
+                        if (t2.def.useHitPoints)
+                        {
+                            num = (((float)(t2.HitPoints)) / ((float)(Math.Max(1, t2.MaxHitPoints))));
+                        }
+                        float value = 0f;
+                        if (t1.def.useHitPoints)
+                        {
+                            value = (((float)(t1.HitPoints)) / ((float)(Math.Max(1, t1.MaxHitPoints))));
                         }
                         return (num.CompareTo(value));
                     };
@@ -664,6 +683,13 @@ namespace BestMix
                         stat = (((float)(thing.MaxHitPoints - thing.HitPoints)) / ((float)(Math.Max(1, thing.MaxHitPoints))));
                     }
                     break;
+                case "RHP":
+                    stat = 0f;
+                    if (thing.def.useHitPoints)
+                    {
+                        stat = (((float)(thing.HitPoints)) / ((float)(Math.Max(1, thing.MaxHitPoints))));
+                    }
+                    break;
                 case "VLC": stat = (0f - thing.MarketValue); break;
                 case "VLE": stat = thing.MarketValue; break;
                 case "TMP": stat = thing.AmbientTemperature; break;
@@ -897,7 +923,6 @@ namespace BestMix
             }
             return true;
         }
-
 
     }
 }
