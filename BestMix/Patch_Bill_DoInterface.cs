@@ -60,15 +60,18 @@ namespace BestMix
 
         public static void AddBMGUI(float width, BillStack billstack, Bill bill)
         {
-            //Color baseColor = new Color(1f, 0.7f, 0.7f, 0.7f);
-            Color baseColor = Color.white;
-            //float offset = Controller.Settings.BillBMPos;
-            Rect rectBM = new Rect(width - (24f + 150f), 0f, 24f, 24f);
-            Texture2D BMTex = BMBillUtility.GetBillBMTex((billstack.billGiver as Thing), bill);
-            if (Widgets.ButtonImage(rectBM, BMTex, baseColor, baseColor * GenUI.SubtleMouseoverColor))
+            if (!(bill.recipe.IsSurgery))
             {
-                BMBillUtility.SetBillBMVal((billstack.billGiver as Thing), bill);
-                SoundDefOf.Click.PlayOneShotOnCamera();
+                //Color baseColor = new Color(1f, 0.7f, 0.7f, 0.7f);
+                Color baseColor = Color.white;
+                //float offset = Controller.Settings.BillBMPos;
+                Rect rectBM = new Rect(width - (24f + 150f), 0f, 24f, 24f);
+                Texture2D BMTex = BMBillUtility.GetBillBMTex((billstack.billGiver as Thing), bill);
+                if (Widgets.ButtonImage(rectBM, BMTex, baseColor, baseColor * GenUI.SubtleMouseoverColor))
+                {
+                    BMBillUtility.SetBillBMVal((billstack.billGiver as Thing), bill);
+                    SoundDefOf.Click.PlayOneShotOnCamera();
+                }
             }
         }
     }

@@ -56,7 +56,7 @@ namespace BestMix
         public static string GetBillBMMode(Thing billGiver, Bill bill)
         {
             string mode = "NON";
-            if (billGiver != null)
+            if (billGiver != null && (!(billGiver is Pawn p)))
             {
                 CompBestMix CBM = billGiver.TryGetComp<CompBestMix>();
                 if (CBM != null)
