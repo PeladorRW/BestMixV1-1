@@ -410,16 +410,44 @@ namespace BestMix
                 case "BTY":
                     comparison = delegate (Thing t1, Thing t2)
                     {
-                        float num = t2.GetStatValue(StatDefOf.Beauty);
-                        float value = t1.GetStatValue(StatDefOf.Beauty);
+                        float num = (t2.GetStatValue(StatDefOf.Beauty));
+                        if ((t2.def?.stuffProps != null) && (t2.def?.stuffProps?.statOffsets != null))
+                        {
+                            if (t2.def.stuffProps.statOffsets.StatListContains(StatDefOf.Beauty))
+                            {
+                                num += t2.def.stuffProps.statOffsets.GetStatOffsetFromList(StatDefOf.Beauty);
+                            }
+                        }
+                        float value = (t1.GetStatValue(StatDefOf.Beauty));
+                        if ((t1.def?.stuffProps != null) && (t1.def?.stuffProps?.statOffsets != null))
+                        {
+                            if (t1.def.stuffProps.statOffsets.StatListContains(StatDefOf.Beauty))
+                            {
+                                value += t1.def.stuffProps.statOffsets.GetStatOffsetFromList(StatDefOf.Beauty);
+                            }
+                        }
                         return (num.CompareTo(value));
                     };
                     break;
                 case "UGY":
                     comparison = delegate (Thing t1, Thing t2)
                     {
-                        float num = (0f - t1.GetStatValue(StatDefOf.Beauty));
-                        float value = (0f - t2.GetStatValue(StatDefOf.Beauty));
+                        float num = (0f - (t2.GetStatValue(StatDefOf.Beauty)));
+                        if ((t2.def?.stuffProps != null) && (t2.def?.stuffProps?.statOffsets != null))
+                        {
+                            if (t2.def.stuffProps.statOffsets.StatListContains(StatDefOf.Beauty))
+                            {
+                                num -= t2.def.stuffProps.statOffsets.GetStatOffsetFromList(StatDefOf.Beauty);
+                            }
+                        }
+                        float value = (0f - (t1.GetStatValue(StatDefOf.Beauty)));
+                        if ((t1.def?.stuffProps != null) && (t1.def?.stuffProps?.statOffsets != null))
+                        {
+                            if (t1.def.stuffProps.statOffsets.StatListContains(StatDefOf.Beauty))
+                            {
+                                value -= t1.def.stuffProps.statOffsets.GetStatOffsetFromList(StatDefOf.Beauty);
+                            }
+                        }
                         return (num.CompareTo(value));
                     };
                     break;
@@ -698,8 +726,24 @@ namespace BestMix
                 case "MST": stat = GetStockAmount(thing, billGiver, rootCell, bill); break;
                 case "LST": stat = (0f - GetStockAmount(thing, billGiver, rootCell, bill)); break;
                 case "RND": stat = RNDFloat(); break;
-                case "BTY": stat = thing.GetStatValue(StatDefOf.Beauty); break;
-                case "UGY": stat = (0f - thing.GetStatValue(StatDefOf.Beauty)); break;
+                case "BTY": stat = thing.GetStatValue(StatDefOf.Beauty);
+                    if ((thing.def?.stuffProps != null) && (thing.def?.stuffProps?.statOffsets != null))
+                    {
+                        if (thing.def.stuffProps.statOffsets.StatListContains(StatDefOf.Beauty))
+                        {
+                            stat += thing.def.stuffProps.statOffsets.GetStatOffsetFromList(StatDefOf.Beauty);
+                        }
+                    }
+                    break;
+                case "UGY": stat = (0f - (thing.GetStatValue(StatDefOf.Beauty)));
+                    if ((thing.def?.stuffProps != null) && (thing.def?.stuffProps?.statOffsets != null))
+                    {
+                        if (thing.def.stuffProps.statOffsets.StatListContains(StatDefOf.Beauty))
+                        {
+                            stat -= thing.def.stuffProps.statOffsets.GetStatOffsetFromList(StatDefOf.Beauty);
+                        }
+                    };
+                    break;
                 case "HVY": stat = thing.GetStatValue(StatDefOf.Mass); break;
                 case "LGT": stat = (0f - thing.GetStatValue(StatDefOf.Mass)); break;
                 case "FLM": stat = thing.GetStatValue(StatDefOf.Flammability); break;
